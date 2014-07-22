@@ -1,12 +1,27 @@
-## Put comments here that give an overall description of what your
-## functions do
+## makeCacheMatrix and cacheSolve functions work together to cache a matrix inversion result.
+## Usage:
+## m = <some matrix>
+## cm = makeCacheMatrix(m)
+## inverse = cacheSolve(cm)
 
-## Write a short comment describing this function
 
+## function makeCacheMatrix
+##  Make a Inverse caching matrix
+##
+## Args:
+##  theMatrix - The matrix to cache the inverse of
+##
+## Returns:
+##  A list of functions:
+##      setMatrix - sets (saves) the matrix
+##      getMtrix - get the original matrix
+##      setInverse - sets (saves) the inverse
+##      getInverse - gets the saved inverse or null if nothing saved
+##
 makeCacheMatrix <- function(theMatrix = matrix()) 
 {
     cachedInverse = NULL
-    # The set function takes a new matrix and resets the cachedInverse
+    # The set function takes a new matrix and resets/clears the saved cachedInverse
     setMatrix = function(y) 
     {
         theMatrix <<- y
@@ -30,13 +45,21 @@ makeCacheMatrix <- function(theMatrix = matrix())
 }
 
 
-## Write a short comment describing this function
 
+## function cacheSolve
+##  solve and cache the inversion of the given matrix
+##
+##  Args:
+##      x   - the matrix to solve
+##      ... - other parameters to the standard solve() function
+##
+##  Returns:
+##      the inverse matrix, if possible.
+##
 cacheSolve <- function(x, ...) 
 {
-    ## Return a matrix that is the inverse of 'x'
     result = x$getInverse()
-    if(!is.null(result)) # if the result has been cached dont' compute it again
+    if(!is.null(result)) # if the result has been cached don't compute it again
     {
         message("getting cached data")
         return(result)
@@ -45,6 +68,8 @@ cacheSolve <- function(x, ...)
     data = x$getMatrix()
     # solve this inverse (if possible)
     result <- solve(data, ...)
+    # cache the result
     x$setInverse(result)
+    
     return (result) # return the result (explicitly)
 }
